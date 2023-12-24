@@ -32,8 +32,25 @@
     > 形式语法是一个4元组$G=(N,\Sigma,P,S)$，其中$N$是非终结符的有限集合（变量集/句法种类集）；$\Sigma$是终结符的有限集合，$N\cap\Sigma=\emptyset$；$v=N\cup\Sigma$为总词汇表；$P$是一组重写规则的有限集合：$P={\alpha\rightarrow\beta}$，其中$\alpha,\beta$是$V$中元素构成的串，但$\alpha$至少应含有一个非终结符；$S\in N$为句子符或初始符。
 
 4. 推导：
-    > 设$G=(N,\Sigma,P,S)$是一个文法，在$(N\cup\Sigma^*)$上定义关系
+    > 设$G=(N,\Sigma,P,S)$是一个文法，在$(N\cup\Sigma^*)$上：
+    > - **直接派生或推导**$\;\overset{\Rightarrow}{_{_G}}$：若$\alpha\beta\gamma\in(N\cup\Sigma)^*,(\beta\rightarrow\delta)\in P$，则有$\alpha\beta\gamma\;\overset{\Rightarrow}{_{_G}}\;\alpha\delta\gamma$。
+    > - **按非平凡方式派生**$\;\overset{+}{\overset{\Rightarrow}{_{_G}}}$：表示$\overset{\Rightarrow}{_{_G}}$的传递闭包，即由$(N\cup\Sigma)^*$上的符号串$\xi_i$到$\xi_{i+1}$的$n(n\ge1)$步推导或派生。
+    > - **派生**$\;\overset{*}{\overset{\Rightarrow}{_{_G}}}$：表示$\overset{\Rightarrow}{_{_G}}$的自反和传递闭包，即由$(N\cup\Sigma)^*$上的符号串$\xi_i$到$\xi_{i+1}$的$n(n\ge0)$步推导或派生。
+    - 最左推导、最右推导和规范推导：
+        - 约定每步推导只改写最左边的非终结符，称为“**最左推导**”。
+        - 约定每步推导只改写最右边的非终结符，称为“**最右推导**”。
+        - 最右推导也称**规范推导**。
+
+5. 文法划分：（1）3型文法（正则文法）；（2）2型文法（上下文无关文法）；（3）1型文法（上下文有关文法）；（4）0型文法（无约束文法）。
+    - 派生规则约束：
+        - （左线性）正则文法：$A\rightarrow Bx, A\rightarrow x, A,B\in N,x\in\Sigma$；
+        - 上下文无关文法：$A\rightarrow\alpha,A\in N,\alpha\in(N\cup\Sigma)^*$；
+        - 上下文有关文法：$\alpha A\beta\rightarrow\alpha\gamma\beta,A\in N,\alpha,\beta,\gamma\in(N\cup\Sigma)^*,|\gamma|\ge1$；
+        - 无约束文法（/无限制重写系统）：$\alpha\rightarrow\beta,\alpha,\beta\in(N\cup\Sigma)^*$。
+    - 关系：$L(G3)\subset L(G2)\subset L(G1)\subset L(G0)$。
 
 ## 自动机
+
+
 
 ## 有限自动机的应用
