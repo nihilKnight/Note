@@ -118,7 +118,7 @@
 19. **影响力最大化模型**：基于贪心算法求解。
     > 在网络中找到一个**种子集合$\mathcal{S}$**，使得：
     > $$
-    >     \mathcal{S}=\argmax_{\mathcal{S}}f_{\mathcal{S}\rightarrow\mathcal{V}}
+    > \mathcal{S}=\argmax_{\mathcal{S}}f_{\mathcal{S}\rightarrow\mathcal{V}}
     > $$
     > 其中$f_{\mathcal{S}\rightarrow\mathcal{V}}$表示$\mathcal{S}$影响的结点数。
     >
