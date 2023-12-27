@@ -58,9 +58,9 @@
 
 5. 应用：（1）音字转换问题；（2）汉语分词问题。
     - 音字转换问题：
-        > $\overset{\frown}{C}String=\argmax\limits_{CString} p(CString)$.
+        > $\overset{\frown}{C}String=\argmax_{CString} p(CString)$.
     - 汉语分词问题：
-        > $\overset{\frown}{S}eg=\argmax\limits_{Seg} p(Seg)$.
+        > $\overset{\frown}{S}eg=\argmax_{Seg} p(Seg)$.
 
 ## 参数估计
 
@@ -130,7 +130,7 @@
 
 14. **绝对减值法**：从每个计数$r$中减去相同的量，剩余的概率量由未见事件均分。
     > 样本中出现了$r$次事件的概率可由如下公式估计：
-    > $$ 
+    > $$
     > p_r=\begin{cases}\dfrac{r-b}{N},&\text{when }r>0\\ \dfrac{b(R-n_0)}{N\cdot n_0},&\text{when }r=0 \end{cases}
     > $$
     > 其中$n_0$为样本中未出现的事件的数目。$b$为减去的常量，$b\le1$。$\dfrac{b(R-n_0)}{N}$是由于减值而产生的剩余概率量。
