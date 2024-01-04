@@ -56,3 +56,8 @@
     - **合并规则**：$X\rightarrow Y,X\rightarrow Z\Rightarrow X\rightarrow YZ$。
     - **伪传递规则**：$X\rightarrow Y,WY\rightarrow Z\Rightarrow XW\rightarrow Z$。
     - **分解规则**：$X\rightarrow Y,Z\subseteq Y\Rightarrow X\rightarrow Z$。
+
+13. **极小函数依赖集**：函数依赖集$F$称为极小函数依赖集（或**最小依赖集**、**最小覆盖**）当且仅当$F$满足以下条件：
+    - $F$中任一函数依赖的右部仅含有一个属性；
+    - $F$中不存在函数依赖$X\rightarrow A$使得$F$与$F-\{X\rightarrow A\}$等价；
+    - $F$中不存在函数依赖$X\rightarrow A$，$X$有真子集$Z$使得$F-\{X\rightarrow A\}\cup\{Z\rightarrow A\}$与$F$等价。
