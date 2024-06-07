@@ -330,3 +330,196 @@ TCP/IP网际层协议主要包括：<u>IP协议（网际协议）、ICMP协议�
 
 - **混淆**：密钥和密文之间构成复杂关系。
 
+12. <span style="background-color:yellow"> 祖冲之密码算法标准：
+
+- **祖冲之密码算法（ZUC）**：用于产生密钥序列。
+
+- **128-EEA3**：基于ZUC的机密性算法。
+
+- **128-EIA3**：基于ZUC的完整性保护算法。
+
+
+## 第5章 双钥密码体制
+
+1. <span style="background-color:yellow"> 双钥密码体制是基于数学难题构造的，请列举出目前存在的数学难题。用双钥体制加密时采用谁的公钥？解密时采用谁的私钥？
+
+答：多项式求根，大整数分解，离散对数，背包问题，DH问题，二次剩余问题，模$n$的平方根问题。公钥加密、私钥解密。
+
+
+2. <span style="background-color:yellow"> RSA是基于何种数学难题构造的？Diffie-Hellman是基于何种数学难题构造的？
+
+答：分别基于大整数分解和离散对数困难问题。
+
+
+3. <span style="background-color:yellow"> 请写出RSA加密和解密的数学表达式，并指出什么是公钥，什么是私钥？并能做简单的加密和解密计算。
+
+答：公私钥对为$(e,d)$，模数为$n$，满足$ed\equiv1\;(\text{mod}\;\varphi(n))$。对明文$m$加密得到密文$c$：$c\equiv m^e\;(\text{mod}\;n)$；对密文$c$解密得到明文$m$：$m\equiv c^d\;(\text{mod}\;n)$。
+
+
+4. <span style="background-color:yellow"> RSA在各种参数选择上有哪些原则和限制？为什么？
+
+答：
+
+- 模数$n$足够大，$p,q$为大素数；
+- $p\pm1,q\pm1$要有大素因子；
+    - $p,q$为<u>强素数</u>。
+- $p,q$之差要大；
+    - 防止通过<u>开方</u>试验出$p,q$值。
+- $1<e<\varphi(n), \gcd(e,\varphi(n))=1$；
+- $e$不应过小；
+    - 防止<u>低加密指数攻击</u>。
+- $d>n^{1/4}$；
+    - 防止<u>维纳攻击</u>。
+
+
+
+5. <span style="background-color:yellow"> 写出ElGamal密码体制是基于何种数学难题？请写出它的加密表达式和解密表达式？
+
+答：
+
+<p align="center">
+    <img width="400" src="figs/5-1.png"/><br>
+    <b>图4 ElGamal密码体制</b>
+</p>
+
+6. <span style="background-color:yellow"> ECC公钥密码基于何种数学难题？写出ECC公钥密码体制的加密表达式和解密表达式。
+
+答：
+
+<p align="center">
+    <img width="400" src="figs/5-4.png"/><br>
+    <b>图5 ECC公钥密码体制</b>
+</p>
+
+
+7. <span style="background-color:yellow"> 写出基于ECC的Diffie-Hellman密钥交换协议。
+
+答：
+
+<p align="center">
+    <img width="300" src="figs/5-2.png"/>
+    <img width="300" src="figs/5-3.png"/><br>
+    <b>图6 Diffie-Hellman密钥交换协议</b>
+</p>
+
+
+8. <span style="background-color:yellow"> RSA和ECC公钥密码算法在加密、解密速度上有何差异？请查阅资料，比较它们分别采用硬件和软件实现时的加密和解密速度。
+
+答：
+
+|  ECC密钥长度（/bits）     |   RSA密钥长度（/bits）    |  $10^n$ MIPS年    |
+|    :----         |   :----         |    :----   |
+|    160           |   1024          |    12      |
+|    320           |   5120          |    36      |
+|    600           |   21000         |    78      |
+|    1200          |   120000        |    168     |
+
+
+9. <span style="background-color:yellow"> 对公钥密码的攻击有哪些常见的攻击方式？它们各有什么特点？
+
+答：
+
+- <u>**选择明文攻击（CPA）**</u>。攻击者选择明文消息并得到加密服务，产生相应的密文，攻击者通过得到的明密文对来降低目标密码体制的安全性。
+
+- <u>**选择密文攻击（CCA）**</u>。攻击者选择密文消息并得到解密服务，产生相应的明文。攻击者用所得到的明密文对来降低目标密码体制的安全性。在解密服务停止后，即在得到目标密文之后，解密服务立即停止。如果攻击者能够从“目标密文”中得到保密明文的信息，则就说攻击是成功的。
+
+- <u>**适应性选择密文攻击（CCA2）**</u>。这是一种CCA，而且除了对“目标密文”解密外，永远能够得到解密服务。
+
+
+10. <span style="background-color:yellow"> 了解中国的商用公钥密码算法SM2。
+
+答：
+
+SM2是一组基于<u>椭圆曲线</u>的公钥密码算法，包含<u>加解密算法、数字签名算法和密钥交换协议</u>，采取了<u>检错措施</u>，提高了系统的数据完整性和可靠性。SM2的公钥长度为512-bit、私钥长度为256-bit、签名长度为256-bit。
+
+
+## 第6章 消息认证与杂凑函数
+
+1. <span style="background-color:yellow"> 请说明Hash函数与加密函数有何不同？
+
+答：
+
+- **Hash函数**: 将任意长度的输入映射为固定长度的输出，具有不可逆性，主要用于数据完整性校验。
+
+- **加密函数**: 将明文转换为密文，可以逆操作恢复明文，主要用于保密性。
+
+
+2. <span style="background-color:yellow"> 杂凑函数具有哪些性质？
+
+答：<u>单向性、任意长输入定长输出、抗原象攻击、抗碰撞攻击</u>。
+
+3. <span style="background-color:yellow"> 什么是消息认证码MAC？如何构造？
+
+答：MAC是有<u>密钥</u>参与杂凑运算的算法。构造方法: 常见的有基于Hash函数的HMAC，和基于分组加密的CBC-MAC、CMAC。
+
+4. <span style="background-color:yellow"> 在不知道密钥的情况下，如何对MAC算法成功实施攻击？（167页）
+
+答：
+
+5. <span style="background-color:yellow"> 如何采用Hash函数和分组加密算法构造MAC？
+
+6. <span style="background-color:yellow"> 什么是消息检测码（或消息摘要）MDC？简述MDC与MAC的异同。
+
+7. <span style="background-color:yellow"> 熟悉迭代杂凑函数的构造方法。
+
+8. <span style="background-color:yellow"> MD5的明文输入分组长度、字长、输出长度是多少位？
+
+9. <span style="background-color:yellow"> SHA-1的明文输入分组长度、字长、输出长度是多少位？
+
+10. <span style="background-color:yellow"> 掌握应用杂凑函数的基本方式，熟悉图6-1、6-2、6-5、6-6所能够提供的安全功能。
+
+11. <span style="background-color:yellow"> 熟悉中国商用杂凑函数SM3的构造。
+
+12. <span style="background-color:yellow"> 掌握迭代杂凑函数的构造方法。
+
+
+## 第7章 数字签名
+
+1. <span style="background-color:yellow"> 数字签名应该具有哪些性质？
+
+2. <span style="background-color:yellow"> 数字签名可以分为哪几类？
+
+3. <span style="background-color:yellow"> RSA签名是基于何种数学难题？
+
+4. <span style="background-color:yellow"> ElGamal签名是基于何种数学难题？请写出ElGamal的签名方程。
+
+5. <span style="background-color:yellow"> Schnorr签名与ElGamal签名有何不同？请比较两者的异同。
+
+6. <span style="background-color:yellow"> 请写出DSS的签名方程，并比较它与ElGamal、Schnorr的异同。
+
+7. <span style="background-color:yellow"> 在以上三种签名方案中，每次签名时，用户都要选择一个随机数k。若将随机数$k$替换成为常数，会出现什么安全问题？请加以分析。
+
+8. <span style="background-color:yellow"> Diffie-Hellman能用来做数字签名吗？
+
+9. <span style="background-color:yellow"> 单钥体制能用来做数字签名吗？
+
+10. <span style="background-color:yellow"> 试比较数字签名在密钥的使用上，与公钥加密算法存在的区别。
+
+11. <span style="background-color:yellow"> 请列举具有特殊功能的数字签名体制有哪些？它们各有什么用途？
+
+12. <span style="background-color:yellow"> 了解中国商用数字签名算法SM2。
+
+
+## 第8章 密码协议
+
+1. <span style="background-color:yellow"> 构成协议的三个主要特征（含义）是什么？
+
+2. <span style="background-color:yellow"> 什么是仲裁协议？什么是裁决协议？什么是自执行协议？
+
+3. <span style="background-color:yellow"> 如果按照密码协议的功能分类，密码协议可以分为哪几类？
+
+4. <span style="background-color:yellow"> 什么是中间人攻击？如何对Diffie-Hellman协议进行中间人攻击？请用画图分析对Diffie-Hellman协议进行中间人攻击的详细过程。
+
+5. <span style="background-color:yellow"> DH协议不能抵抗中间人攻击的原因是什么？如何改造DH协议可以使其抵抗中间人攻击？
+
+6. <span style="background-color:yellow"> Diffie-Hellman能用来做数字签名吗？
+
+7. <span style="background-color:yellow"> 掌握大嘴青蛙协议、Yahalom、Kerberos协议安全协议设计的思想。
+
+8. <span style="background-color:yellow"> 请画图分析第218页的SKID协议为什么不能抵抗中间人攻击？如何改造这个协议，可以有效抵抗中间人攻击？
+
+
+9. <span style="background-color:yellow"> 对密码协议的攻击方法有哪些？
+
+
+10. <span style="background-color:yellow"> 密码协议的安全性分析的常用方法有哪些？
