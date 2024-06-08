@@ -393,7 +393,7 @@ TCP/IP网际层协议主要包括：<u>IP协议（网际协议）、ICMP协议�
 
 
 7. <span style="background-color:yellow"> 写出基于ECC的Diffie-Hellman密钥交换协议。
-
+n
 答：
 
 <p align="center">
@@ -454,21 +454,58 @@ SM2是一组基于<u>椭圆曲线</u>的公钥密码算法，包含<u>加解密�
 
 4. <span style="background-color:yellow"> 在不知道密钥的情况下，如何对MAC算法成功实施攻击？（167页）
 
-答：
+
+<span style="background-color:red">答：
 
 5. <span style="background-color:yellow"> 如何采用Hash函数和分组加密算法构造MAC？
 
+答：
+
+- HMAC：$\text{HMAC}(K,m)=H((K^{\prime}\oplus opad)||H(K^{\prime}\oplus ipad)||m)$。
+- CBC-MAC：$C_0=IV,\;C_i=E_k(m_i\oplus C_{i-1}),\; i=1,2,\ldots,l$。
+
+
 6. <span style="background-color:yellow"> 什么是消息检测码（或消息摘要）MDC？简述MDC与MAC的异同。
+
+答：MDC是无密钥控制的单向杂凑函数，其杂凑值只是输入字串的函数，任何人都可以计算。
+- 不同点：MDC<u>不具有身份认证功能</u>，MAC具有身份认证功能；
+- 相同点：MDC 和MAC都可以检测接收数据的完整性。
+
 
 7. <span style="background-color:yellow"> 熟悉迭代杂凑函数的构造方法。
 
+答：有<u>Rabin法、密码分组链接法、密码反馈法、组合明/密文链接法、修正Daveis-Meyer法</u>。
+
+
 8. <span style="background-color:yellow"> MD5的明文输入分组长度、字长、输出长度是多少位？
+
+答：
+
+<p align="center">
+    <img width="400" src="figs/6-1.png"/><br>
+    <b>图7 各类杂凑算法对比</b>
+</p>
+
 
 9. <span style="background-color:yellow"> SHA-1的明文输入分组长度、字长、输出长度是多少位？
 
+答：见题8。
+
+
 10. <span style="background-color:yellow"> 掌握应用杂凑函数的基本方式，熟悉图6-1、6-2、6-5、6-6所能够提供的安全功能。
 
+
+<span style="background-color:red"> 答：
+
 11. <span style="background-color:yellow"> 熟悉中国商用杂凑函数SM3的构造。
+
+答：
+
+<p align="center">
+    <img width="400" src="figs/6-2.png"/><br>
+    <b>图8 SM3算法简介</b>
+</p>
+
 
 12. <span style="background-color:yellow"> 掌握迭代杂凑函数的构造方法。
 
@@ -477,49 +514,187 @@ SM2是一组基于<u>椭圆曲线</u>的公钥密码算法，包含<u>加解密�
 
 1. <span style="background-color:yellow"> 数字签名应该具有哪些性质？
 
+答：满足<u>R1、S、R2、T</u>等条件。
+
+- R1：收方能够确认或证实发放的签名，但不能伪造；
+- S：发方发出签名的消息给收方后，就不能再否认他所签发的消息；
+- R2：收方对已收到的签名消息不能否认，即有收报认证；
+- T：第三者可以确认收发双方之间的消息传送，但不能伪造这一过程。
+
+
 2. <span style="background-color:yellow"> 数字签名可以分为哪几类？
+
+答：
+
+- 按照是否被压缩：对<u>整体消息/压缩消息</u>进行签名。
+- 按照消息/签名的对应关系：<u>确定性/随机化</u>签名。
+- 按照参与方：直接/仲裁签名。
+
 
 3. <span style="background-color:yellow"> RSA签名是基于何种数学难题？
 
+答：基于大整数分解问题。
+
+
 4. <span style="background-color:yellow"> ElGamal签名是基于何种数学难题？请写出ElGamal的签名方程。
+
+答：
+
+<p align="center">
+    <img width="300" src="figs/7-1.png"/>
+    <img width="300" src="figs/7-2.png"/><br>
+    <b>图9 ElGamal签名</b>
+</p>
+
 
 5. <span style="background-color:yellow"> Schnorr签名与ElGamal签名有何不同？请比较两者的异同。
 
+答：
+
+<p align="center">
+    <img width="400" src="figs/7-3.png"/><br>
+    <b>图10 Schnorr签名与ElGamal签名异同</b>
+</p>
+
+
 6. <span style="background-color:yellow"> 请写出DSS的签名方程，并比较它与ElGamal、Schnorr的异同。
 
-7. <span style="background-color:yellow"> 在以上三种签名方案中，每次签名时，用户都要选择一个随机数k。若将随机数$k$替换成为常数，会出现什么安全问题？请加以分析。
+答：
+
+<p align="center">
+    <img width="300" src="figs/7-4.png"/>
+    <img width="300" src="figs/7-5.png"/><br>
+    <b>图11 DSS签名</b>
+</p>
+
+- DSS: 政府标准，基于ElGamal，签名长度固定。
+
+- ElGamal: 签名长度较长，直接使用消息哈希值。
+
+- Schnorr: 简洁高效，签名长度较短。
+
+
+7. <span style="background-color:yellow"> 在以上三种签名方案中，每次签名时，用户都要选择一个随机数k。若将随机数k替换成为常数，会出现什么安全问题？请加以分析。
+
+答：如果$k$是常数，攻击者可以通过多个签名中提取相同的$k$信息，进而推算出私钥$x$，破坏签名方案的安全性。
+
 
 8. <span style="background-color:yellow"> Diffie-Hellman能用来做数字签名吗？
 
+答：不能。Diffie-Hellman主要用于密钥交换，缺乏签名算法中的认证和不可否认性。
+
+
 9. <span style="background-color:yellow"> 单钥体制能用来做数字签名吗？
+
+答：不能。单钥体制（对称加密）不能提供不可否认性和认证。
+
 
 10. <span style="background-color:yellow"> 试比较数字签名在密钥的使用上，与公钥加密算法存在的区别。
 
+答：
+
+- 数字签名: 用私钥签名，公钥验证。
+
+- 公钥加密: 用公钥加密，私钥解密。
+
+
 11. <span style="background-color:yellow"> 请列举具有特殊功能的数字签名体制有哪些？它们各有什么用途？
 
+答：
+
+- **<u>不可否认签名</u>**：这类签名要求在签名者合作下才能验证签名。如果无签名者合作，这类签名不可验证，从而可以防止恶意的攻击者随意复制和散布签名者所签的文件。这一性质可以用于知识产权的保护等。
+
+- **<u>防失败签名</u>**：是一种强安全性的数字签名，可防范有充足计算资源的攻击者。在分析出私钥的情况下，攻击者也难以伪造Alice的签名。签名者也难以对自己的签名进行抵赖。
+
+- **<u>盲签名</u>**：签名者对一个文件做数字签名，但文件所有者不想让签名者知道文件的内容。可用于选举投票、数字货币协议、电子商务系统。
+
+- **<u>群签名</u>**：只有群中的成员才能代表该群体进行数字签名。接收方用公钥验证群签名，但无法知道由群体中的哪个成员所签。发生争议时，由群体中的成员或可信赖机构识别群签名的签名者。可以用于项目投标。
+
+- **<u>代理签名</u>**：代理签名就是委托人授权某个代理人进行的签名，在委托签名时，签名密钥不交给代理人。
+
+- **<u>指定证实人签名</u>**：在一个机构中，指定一个人负责证实所有人的签名。任何成员的签名都具有不可否认性，但证实工作均由指定人完成。
+
+- **<u>一次性数字签名</u>**：签名者至多只能对一个消息进行签名，否则签名就可能被伪造。
+
+
 12. <span style="background-color:yellow"> 了解中国商用数字签名算法SM2。
+
+<p align="center">
+    <img width="400" src="figs/7-6.png"/><br>
+    <b>图12 SM2签名算法</b>
+</p>
 
 
 ## 第8章 密码协议
 
 1. <span style="background-color:yellow"> 构成协议的三个主要特征（含义）是什么？
 
+答：<u>顺序执行、两个以上的参与者、完成特定任务</u>。
+
+
 2. <span style="background-color:yellow"> 什么是仲裁协议？什么是裁决协议？什么是自执行协议？
+
+答：
+
+- **<u>仲裁协议</u>**：存在公正的、各方均信赖的第三方作为仲裁者，帮助两个互不信赖的实体完成协议。
+- **<u>裁决协议</u>**：可信赖第三方不直接参与协议，只有发生纠纷时，裁决人才执行协议。
+- **<u>自执行协议</u>**：协议本身保证公平性，如果协议中一方试图欺骗，另一方能够立刻检测到欺骗的发生，并停止执行协议。
+
 
 3. <span style="background-color:yellow"> 如果按照密码协议的功能分类，密码协议可以分为哪几类？
 
+答：<u>密钥建立协议、认证建立协议、认证的密钥建立协议</u>。
+
+
 4. <span style="background-color:yellow"> 什么是中间人攻击？如何对Diffie-Hellman协议进行中间人攻击？请用画图分析对Diffie-Hellman协议进行中间人攻击的详细过程。
+
+答：
+
+- 中间人攻击: 攻击者在通信双方之间拦截并篡改信息。
+
+- 对Diffie-Hellman协议的中间人攻击过程：
+    - Alice发送$A=g^x\;\text{mod}\;p\;$给Bob，Eve截获并替换成$g^z\;\text{mod}\;p$；
+    - Bob发送$A=g^y\;\text{mod}\;p\;$给Alice，Eve截获并替换成$g^z\;\text{mod}\;p$；
+    - Eve与Alice计算$K_{EA}=g^{xz}\;\text{mod}\;p$；Eve与Bob计算$K_{EB}=g^{yz}\;\text{mod}\;p$。
+    - Eve获得两个共享密钥，并能解密和篡改双方通信。
+
 
 5. <span style="background-color:yellow"> DH协议不能抵抗中间人攻击的原因是什么？如何改造DH协议可以使其抵抗中间人攻击？
 
+答：
+
+- 原因: DH协议没有验证通信双方身份，容易被中间人截获和篡改。
+
+- 改造方法: 结合认证机制，如数字签名或公钥基础设施（PKI），验证通信双方身份。
+
+
 6. <span style="background-color:yellow"> Diffie-Hellman能用来做数字签名吗？
+
+答：不能。Diffie-Hellman主要用于密钥交换，缺乏签名算法中的认证和不可否认性。
+
 
 7. <span style="background-color:yellow"> 掌握大嘴青蛙协议、Yahalom、Kerberos协议安全协议设计的思想。
 
+<span style="background-color:red"> 答：
+
+
 8. <span style="background-color:yellow"> 请画图分析第218页的SKID协议为什么不能抵抗中间人攻击？如何改造这个协议，可以有效抵抗中间人攻击？
+
+<span style="background-color:red"> 答：
 
 
 9. <span style="background-color:yellow"> 对密码协议的攻击方法有哪些？
 
+答：<u>已知明文攻击、选择密文攻击、<span style="background-color:red">预言者会话攻击、并行会话攻击</u>。
+
 
 10. <span style="background-color:yellow"> 密码协议的安全性分析的常用方法有哪些？
+
+答：<u>攻击检验法、形式语言逻辑分析法、可证明安全分析法</u>。
+
+
+
+## 第9章 数字证书与公钥基础设施
+
+
+
