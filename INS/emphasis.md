@@ -971,81 +971,382 @@ PKI的组成部分有：
 
 ## 第12章 防火墙原理与设计
 
-1. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是防火墙？防护墙的主要功能是什么？防护墙的默认规则是什么？
+1. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是防火墙？防火墙的主要功能是什么？防火墙的默认规则是什么？
 
-2. <span style="background-color:yellow"> <span style="background-color:yellow"> 按防护墙的技术分类，可分为哪几类？若按防护墙的结构分类，又可以分为哪几类？
+答：
+
+- 定义：防火墙是由软件和硬件组成的系统，它<u>处于安全的网络和不安全的网络之间</u>，属于<u>网络边界防护设备</u>。由系统管理员设置<u>访问控制规则</u>，对<u>进出网络边界的数据流进行过滤</u>。
+
+- 功能：
+    - <u>包过滤</u>: 根据包头信息决定是否放行数据包。
+    - <u>状态检测</u>: 检查网络连接的状态，允许合法的会话数据包通过。
+    - <u>应用层过滤</u>: 分析应用层协议的数据，阻止不安全内容。
+    - <u>代理服务</u>: 通过代理服务器保护内部网络。
+    - <u>网络地址转换（NAT）</u>: 隐藏内部网络结构，转换IP地址和端口号。
+
+- 防火墙默认规则：<u>凡是没有明确允许的，一律都是禁止的</u>。
+
+
+2. <span style="background-color:yellow"> <span style="background-color:yellow"> 按防火墙的技术分类，可分为哪几类？若按防火墙的结构分类，又可以分为哪几类？
+
+答：
+
+- 按技术分类：<u>包过滤防火墙、电路级网关防火墙、应用级网关防火墙</u>。
+
+- 按结构分类：<u>静态包过滤、动态包过滤、电路级网关、应用层网关、状态检查包过滤、切换代理、空气隙（物理隔离）</u>。
+
 
 3. <span style="background-color:yellow"> <span style="background-color:yellow"> 防火墙工作于OSI七层模型的层次越高，其安全性是不是越高？
 
-4. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是网络地址转换NAT？防护墙为什么要做NAT转换？NAT的类型有哪些？
+答：是的。防火墙工作于OSI模型的层次越高，能提供的安全保护等级就越高。
+
+
+4. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是网络地址转换NAT？防火墙为什么要做NAT转换？NAT的类型有哪些？
+
+答：
+
+- 定义：实现私有IP和共有IP间的转换。
+
+- 原因：（1）使多个内部设备共享一个公共IP地址，已解决IP地址短缺问题；（2）隐藏内部网络结构，防止外部直接访问内部设备，增强安全性。
+
+类型：动态NAT、静态NAT、PAT；SNAT、DNAT。
+
 
 5. <span style="background-color:yellow"> <span style="background-color:yellow"> 掌握NAT路由器的工作原理，要知道外出的数据包和进入的数据包地址是如何替换的？
 
-6. <span style="background-color:yellow"> <span style="background-color:yellow"> 静态包过滤防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+答：
 
-7. <span style="background-color:yellow"> <span style="background-color:yellow"> 动态包过滤防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+- 外出数据包: NAT路由器将<u>内部私有IP地址和端口号</u>替换为<u>公共IP地址和新端口号</u>，记录映射关系。
+
+- 进入数据包: NAT路由器根据映射关系，将公共IP地址和端口号替换回私有IP地址和原端口号，转发到内部网络设备。
+
+
+6. <span style="background-color:yellow"> <span style="background-color:yellow"> 静态包过滤防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+答：<u>网络层</u>；<u>源及目的IP地址、源及目的端口号、协议类型</u>等协议头特定域的检查。
+
+- 优点：简单高效，速度快；易于配置和维护。
+- 缺点：安全性较低、缺少状态感知能力、易受欺骗攻击；不能深入分析应用层数据、过滤粒度较粗；创建访问控制规则较困难。
+
+
+7. <span style="background-color:yellow"> <span style="background-color:yellow"> 动态包过滤防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+答：<u>网络层（或运输层）</u>。除静态包过滤防火墙检查的内容外，还检查<u>握手信息、序列号等状态连接信息</u>。
+
+- 优点：具有状态感知能力；效率较高、成本较低；
+- 缺点：没过滤<u>数据包的净荷部分</u>，安全性不高。
+
 
 8. <span style="background-color:yellow"> <span style="background-color:yellow"> 电路级网关防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
 
+答：<u>会话层</u>。除动态包过滤防火墙检查的内容外，还检查<u>TCP及UDP会话连接信息</u>。
+
+- 优点：切断了外部网络到防火墙后的服务器直接连接。
+- 缺点：没过滤<u>数据包的净荷部分</u>，安全性不高。
+
+
 9. <span style="background-color:yellow"> <span style="background-color:yellow"> 应用级网关防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+答：<u>应用层</u>。检查<u>HTTP、FTP等应用层协议数据</u>。
+
+- 优点：能深入检查应用层数据，提供细粒度控制；日志功能强大；高度安全，能检测并阻止复杂攻击。
+- 缺点：灵活性差、性能开销大，处理速度较慢；配置和管理复杂，需要高水平的专业知识。
+
 
 10. <span style="background-color:yellow"> <span style="background-color:yellow"> 状态检测防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
 
-11. <span style="background-color:yellow"> <span style="background-color:yellow"> 切换代理防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+答：<u>工作于所有层级</u>。检测<u>通信信息、通信状态、应用状态，同时能够操作信息</u>。
+
+- 优点：安全性较其他包过滤器更高；采用动态包过滤运行时、或采用SMP时，速度较快。
+- 缺点：因未打破C/S结构，具有一定安全风险；不能满足对高并发连接数量的要求。
+
+
+11. <span style="background-color:yellow"> <span style="background-color:yellow"> 切换代理防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+答：<u>会话层、网络层</u>。过滤检查内容类似于电路级网关防火墙。
+
+- 优点：性能优于传统电路级网关；具有一定状态感知能力。
+- 缺点：没过滤<u>数据包的净荷部分</u>，安全性不高；安全性不及传统电路级网关。
+
 
 12. <span style="background-color:yellow"> <span style="background-color:yellow"> 空气隙防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+答：<u>实际上不工作在OSI模型的任何一层</u>。进行<u>物理隔离</u>，不存在直接数据包过滤。
+
+- 优点：切断与防火墙后面服务器的直接连接，消除<u>隐信道攻击</u>的风险；采用应用代理对协议头长度，进行检测，消除<u>缓冲器溢出攻击</u>的风险；与应用级网关结合使用，提供很高的安全性。
+- 缺点：限制了数据交换的灵活性，降低了系统效率；不支持交互式访问；适用范围窄；系统配置复杂。
 
 
 ##  第13章 入侵检测技术
 
 1. <span style="background-color:yellow"> 什么是入侵检测系统IDS？IDS的主要功能是什么？评价IDS好坏的标准是什么？
 
+答：
+
+- 定义：监控网络或系统中的恶意活动或违反安全策略行为的软硬件系统。
+
+- 主要功能：
+
+（1） **<u>网络流量的跟踪与分析功能</u>**。跟踪用户进出网络的所有活动，实时检测并分析用户在系统中的活动状态；实时统计网络流量，检测拒绝服务攻击等异常行为。
+
+（2） **<u>已知攻击特征的识别功能</u>**。识别特定类型的攻击，并向控制台报警，为防御提供依据。根据定制的条件过滤重复警报事件，减轻传输与响应的压力。
+
+（3） **<u>异常行为的分析、统计与响应功能</u>**。分析系统的异常行为模式，统计异常行为，并对异常行为做出响应。
+
+（4） **<u>特征库的在线和离线升级功能</u>**。提供入侵检测规则在线和离线升级，实时更新入侵特征库，不断提高IDS的入侵检测能力。
+
+（5） **<u>数据文件的完整性检查功能</u>**。检查关键数据文件的完整性，识别并报告数据文件的改动情况。
+
+（6） **<u>自定义的响应功能</u>**。定制实时响应策略；根据用户定义，经过系统过滤，对警报事件及时响应。
+
+（7） **<u>系统漏洞的预报警功能</u>**。对未发现的系统漏洞特征进行预报警。
+
+（8） **<u>IDS探测器集中管理功能</u>**。通过控制台收集探测器的状态和报警信息，控制各个探测器的行为。
+
+
 2. <span style="background-color:yellow"> 异常检测的方法有哪些？误用检测的方法有哪些？入侵检测技术有哪些？
+
+答：
+
+- **<u>异常检测技术</u>**又被称为<u>**基于行为的入侵检测技术**</u>，用来识别主机和网络中的异常行为。该技术假设攻击行为与正常行为有明显的差异。
+    - 统计异常检测方法；
+    - 特征选择异常检测方法；
+    - 基于贝叶斯推理异常检测方法；
+    - 基于贝叶斯网络异常检测方法；
+    - 基于模式预测异常检测方法。
+- **<u>误用检测技术</u>**又被称为<u>**基于知识的入侵检测技术**</u>**。该技术假设所有入侵行为和手段（及其变形）都能表达为一种模式或特征。
+    - 基于条件的概率误用检测方法；
+    - 基于专家系统误用检测方法；
+    - 基于状态迁移分析误用检测方法；
+    - 基于键盘监控误用检测方法；
+    - 基于模型误用检测方法。
+- 其他入侵检测技术：
+    - 基于概率统计的检测：它对用户历史行为建立模型；
+    - 基于神经网络的检测：通过训练神经单元可预测输出；
+    - 基于专家系统的检测：专家系统根据推理规则自动分析；
+    - 基于模型推理的检测：建立行为模型检测非法行为；
+    - 基于免疫的检测：运用计算机免疫特性设置动态检测代理；
+    - 入侵检测的新技术：数据挖掘、移动代理、AI技术等。
+
 
 3. <span style="background-color:yellow"> IDS的结构由哪几部分组成？各自有何功能？
 
+答：IDS的功能结构有<u>事件提取、入侵分析、入侵响应、远程控制</u>。其各自功能如图16所示：
+
+<p align="center">
+    <img width="400" src="figs/13-1.png"/><br>
+    <b>图16 IDS结构功能</b>
+</p>
+
+
 4. <span style="background-color:yellow"> 按照数据来源分类，IDS分哪几类？按照检测技术分类，IDS分哪几类？
+
+答：
+
+<p align="center">
+    <img width="300" src="figs/13-2.png"/>
+    <img width="300" src="figs/13-3.png"/><br>
+    <b>图17 IDS的分类</b>
+</p>
+
 
 5. <span style="background-color:yellow"> 什么是NIDS？NIDS在网络中是如何部署的？NIDS有何优缺点？
 
+答：
+
+- NIDS（网络入侵检测系统）: 监控和分析<u>网络流量</u>，检测潜在入侵。
+
+- 部署: 通常部署在<u>网络边界或关键节点</u>，监控进出网络的流量。
+
+
 6. <span style="background-color:yellow"> 什么是HIDS？HIDS在网络中是如何部署的？HIDS有何优缺点？
+
+答：
+
+- HIDS（主机入侵检测系统）: 监控和分析<u>主机系统活动</u>，检测潜在入侵。
+
+- 部署: 安装在每个<u>需要保护的主机</u>上，监控系统日志、文件完整性等。
+
 
 7. <span style="background-color:yellow"> 什么是DIDS？DIDS在网络中是如何部署的？DIDS有何优缺点？
 
+答：DIDS通常由<u>数据采集构件、通信传输构件、入侵检测分析构件、应急处理构件和用户管理构件</u>等组成。这些部件或驻留在网络中的主机上，或安装在网络监测点上。
+
+
 8. <span style="background-color:yellow"> 评价一个IDS优劣的关键性能、功能指标有哪些？
+
+答：
+
+（1） **<u>检测入侵能力</u>**：用户安装上IDS后，在默认设置情况下，应该对各种服务可能遇到的攻击进行告警检测。这个能力主要体现在知识库的完备性，体现在规则是否可提供更新下载和规则的数量与质量。
+
+（2）**<u>抗欺骗能力</u>**：入侵者会想方设法逃避IDS的检测，逃避方法可分成两大类: 让IDS出现漏报和误报。因此，漏报率、误报率是IDS的关键指标。漏报比误报更危险。
+
+（3）**<u>远程管理能力</u>**：用户希望坐在办公室中实时查看和管理机房里的IDS，IDS产品应满足用户的这种需求，为用户提供远程管理功能。此外，IDS还应支持各种远程告警方式，如打电话、发邮件等。
+
+（4）**<u>自身安全性</u>**：IDS程序自身的鲁棒性是衡量一个IDS系统好坏的重要指标。IDS的鲁棒性主要体现在两个方面: 一是IDS设备在各种网络环境下具有抗DDoS等网络攻击的能力; 二是程序各个模块之间的通信不被破坏，不可仿冒。
+
 
 9. <span style="background-color:yellow"> IDS的异常检测规则是否越多越好？
 
+答：异常检测规则不是越多越好。过多的规则可能导致误报率增加和性能下降。关键在于规则的质量和适用性。
+
+
 10. <span style="background-color:yellow"> IDS是否能够主动发现并阻断入侵？若要阻断入侵，应该如何去做才能阻断攻击？
 
+答：传统IDS主要用于检测和报警，不主动阻断入侵。若要阻断入侵，可以结合防火墙或入侵防御系统（IPS）一起使用。IPS能够实时检测和阻止恶意流量。
+
+
 11. <span style="background-color:yellow"> 在一个实际网络中，IDS的探测器接口一般用网线接在哪个网络设备的哪个位置？给你1台防火墙、1台IDS、1台交换机、1台路由器，请画出它们的连接图。
+
+答：IDS探测器接口连接位置通常接在<u>网络交换机的镜像端口</u>，或者<u>防火墙的内部接口</u>。
+
+```
+    [Internet]
+       |
+    [Router]
+       |
+    [Firewall]
+       |
+    [Switch] --- [IDS]
+       |
+    [Internal Network]
+```
 
 
 ##  第14章 VPN技术
 
 1. <span style="background-color:yellow"> 什么是虚拟专网VPN？VPN的主要功能是什么？
 
+答：将物理上分布在不同地点的网络，通过<u>公用网络（如互联网）</u>连接而构成逻辑上独立的虚拟子网。
+
+主要功能：
+- <u>数据加密</u>: 确保数据传输的保密性。
+- <u>身份验证</u>: 确认连接双方的身份。
+- <u>隧道技术</u>: 在公用网络上创建私密的传输通道。
+
+
 2. <span style="background-color:yellow"> 按照应用场景分类，VPN可分为哪几类？按隧道协议分类，VPN可分为哪几类？
+
+答：
+
+<p align="center">
+    <img width="300" src="figs/14-1.png"/>
+    <img width="300" src="figs/14-2.png"/><br>
+    <b>图18 VPN的分类</b>
+</p>
+
 
 3. <span style="background-color:yellow"> VPN 所采用的关键技术有哪些？OSI模型第3层的隧道协议有哪些？
 
-4. <span style="background-color:yellow"> IPSec 协议主要由哪两种协议构成？每种协议又有哪两种工作模式？
+答：
 
-5. <span style="background-color:yellow"> IPSecVPN在采用传输模式、隧道模式时，它们对IP数据包的封装模式有何差异？
+关键技术：（1）**<u>隧道技术、加解密技术、身份认证技术、密钥管理技术、访问控制</u>**。
 
-6. <span style="background-color:yellow"> IPSecVPN在功能实现上，由哪几个系统模块组成？
+OSI第2、3层的隧道协议如图所示：
+
+<p align="center">
+    <img width="300" src="figs/14-3.png"/>
+    <img width="300" src="figs/14-4.png"/><br>
+    <b>图19 OSI第2、3层的隧道协议</b>
+</p>
+
+
+4. <span style="background-color:yellow"> IPSec协议主要由哪两种协议构成？每种协议又有哪两种工作模式？
+
+答：
+
+- IPSec协议:
+    - <u>**AH（认证头协议）**</u>: 提供数据完整性和认证。
+    - <u>**ESP（封装安全载荷）**</u>: 提供数据加密和认证。
+- 工作模式:
+    - <u>**传输模式**</u>: 仅加密IP数据部分。
+    - <u>**隧道模式**</u>: 加密整个IP数据包。
+
+
+5. <span style="background-color:yellow"> IPSec VPN在采用传输模式、隧道模式时，它们对IP数据包的封装模式有何差异？
+
+答：如题4所述。
+
+
+6. <span style="background-color:yellow"> IPSec VPN在功能实现上，由哪几个系统模块组成？
+
+答：由<u>**管理模块、密钥分配和生成模块、身份认证模块、数据加解密模块、数据分组封装和分解模块、加密函数库**</u>构成。
+
 
 7. <span style="background-color:yellow"> IPSec VPN有何优缺点？它适用于何种应用场景？
 
+答：
+
+- 优点:
+    - 提供强大的加密和认证机制。
+    - 适用于保护IP层数据。
+
+- 缺点:
+    - 配置复杂，需专业知识。
+    - 可能影响网络性能。
+- 应用场景: 需要<u>**高安全性**</u>的数据传输，如企业站点间连接。
+
+
 8. <span style="background-color:yellow"> 什么是TLS VPN？TLS VPN有何优缺点？它适用于何种应用场景？
 
-9. <span style="background-color:yellow"> IPSecVPN和TLS VPN是否可以相互替代？试比较IPSecVPN和TLS VPN的异同点 。
+答：TLS VPN: 基于TLS协议的VPN，保护传输层数据。
+
+- 优点:
+    - 配置简单，使用广泛。
+    - 通过HTTPS协议，兼容性好。
+- 缺点:
+    - 主要用于传输层，不保护IP层数据。
+    - 应用场景: <u>远程访问</u>，需兼容多种客户端设备。
+
+
+9. <span style="background-color:yellow"> IPSec VPN和TLS VPN是否可以相互替代？试比较IPSec VPN和TLS VPN的异同点。
+
+答：不能相互代替。
+
+<p align="center">
+    <img width="300" src="figs/14-5.png"/>
+    <img width="300" src="figs/14-6.png"/><br>
+    <b>图20 IPSec VPN与TLS VPN对比</b>
+</p>
+
 
 10. <span style="background-color:yellow"> 什么是MPL VPN？MPLS VPN基于何种IP路由选择技术？
 
+答：
+
+- MPL VPN: 基于多协议标签交换（MPLS）的VPN。
+
+- 路由选择技术: 基于<u>**标记**</u>的路由技术。
+
+
 11. <span style="background-color:yellow"> 京东商城用何种VPN？网银用何种种VPN？北航老校区和新校区用何种VPN相连？
+
+答：
+
+- 京东商城: 可能使用IPSec VPN或MPLS VPN，确保站点间数据安全。
+
+- 网银: 通常使用TLS VPN，保护用户和银行间的通信。
+
+- 北航校区连接: 可能使用IPSec VPN或MPLS VPN，确保校区间数据安全传输。
+
 
 12. <span style="background-color:yellow"> 在一个实际网络中，VPN部署在网络中的哪个位置？给你1台VPN、1台防火墙、1台IDS、1台交换机、1台路由器，请画出它们的连接图。
 
+答：VPN部署位置通常<u>部署在防火墙后</u>，用于加密和保护外部连接的数据流。
+
+```
+    [Internet]
+       |
+    [Router]
+       |
+    [Firewall]
+       |
+    [VPN]
+       |
+    [Switch] --- [IDS]
+       |
+    [Internal Network]
+
+```
 
 
