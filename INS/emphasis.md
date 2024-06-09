@@ -696,5 +696,356 @@ SM2是一组基于<u>椭圆曲线</u>的公钥密码算法，包含<u>加解密�
 
 ## 第9章 数字证书与公钥基础设施
 
+1. <span style="background-color:yellow"> 什么是PKI？PKI由哪几部分组成？每个组成部分的作用是什么？
+
+答：PKI是一种<u>遵循标准的利用公钥理论和技术</u>建立的<u>提供安全服务的基础设施</u>。
+
+PKI的组成部分有：
+
+- **证书机构（CA）**：负责发放和管理数字证书。
+
+- **注册机构（RA）**：按照特定政策与管理规范对用户的资格进行审查，并负责审核证书申请、撤销证书等操作，承担因审核错误而引起的一切后果（<u>只有CA签发证书，RA不签发</u>）。
+
+- **证书发布库**：集中存放CA颁发证书和证书撤销列表（Certificate Revocation List, CRL）。
+
+- **密钥备份与恢复**：提供密钥备份与恢复机制。
+
+- **证书撤销**：证书由于某些原因需要作废时，该机制用于警告其他用户不要再使用该用户的公钥证书。
+
+- **PKI应用接口**：提供<u>认证服务、数据完整性服务、数据保密性服务、不可否认性服务、公证服务</u>。
+
+
+2. <span style="background-color:yellow"> 什么是数字证书？一个数字证书包含哪些内容？
+
+答：将<u>用户身份ID</u>与其持有的<u>公钥</u>绑定，再由CA对该<u>用户身份和公钥的组合</u>进行签名，再将<u>签名、身份、公钥以及其他信息</u>加以存储，即数字证书。
+
+<p align="center">
+    <img width="400" src="figs/9-1.png"/><br>
+    <b>图13 数字证书的内容</b>
+</p>
+
+证书的生成步骤为：<u>密钥生成、用户注册、验证信息、证书生成</u>。
+
+
+3. <span style="background-color:yellow"> 了解X.509标准规定的数字证书的格式。
+
+答：如图13所示。
+
+
+4. <span style="background-color:yellow"> 实际中，由谁来签发证书？签发证书时，是由谁的何种密钥（私钥还是公钥）进行签名？验证证书时，是用谁的何种密钥来验证？
+
+答：由各级CA来签发证书，签发时用CA的私钥，验证时用该CA的公钥。
+
+
+5. <span style="background-color:yellow"> 数字证书的作用是什么？它本质上是为解决网络安全中的何种问题？
+
+答：
+
+数字证书的作用：将<u>用户身份和所持公钥</u>进行绑定，可以证明<u>网络实体</u>在特定安全应用的身份信息。
+
+本质解决何种问题：**<u>公钥可信性问题**</u>。
+
+
+6. <span style="background-color:yellow"> 在实际应用中，若采用层次化的CA架构，如何实现两个位于不同子CA中的用户之间的数字证书验证？
+
+答：获取待验证证书的证书链，即依次获取上一级证书的<u>公钥</u>以验证证书的签名，直至到可信任的根节点CA。
+
+
+7. <span style="background-color:yellow"> 什么是交叉证书？
+
+答：交叉证书可以让<u>不同PKI域的根CA</u>进行交叉认证，从而解决根CA不同的信任问题。
+
+
+8. <span style="background-color:yellow"> 如何实现数字证书的撤销？如何实现数字证书的在线查询？
+
+答：通过<u>脱机撤销状态检查（维护CRL）或联机撤销状态检查（通过OCSP或SCVP协议）</u>两种机制。
+
+<p align="center">
+    <img width="400" src="figs/9-2.png"/><br>
+    <b>图13 数字证书的在线查询</b>
+</p>
+
+
+9. <span style="background-color:yellow"> 什么是漫游证书？简述其基本工作原理。
+
+答：
+
+漫游证书：采用第三方软件，将用户<u>公私钥存放在可信服务器</u>上，允许用户在正确配置的条件下访问自己的公私钥，已解决传统数字证书及私钥的移动性弊端（易丢失、损坏）。
+
+基本原理：
+- 将数字证书和私钥存储于安全的中央服务器；
+- 用户需要数字证书时，可向该服务器认证自己；
+- 认证成功后，该服务器将证书和私钥发给用户；
+- 当用户完成工作后，该软件自动删除证书和私钥。
+
+
+10. <span style="background-color:yellow"> 一个PKI/CA数字证书系统由哪几部分构成？
+
+答：签发中心、密钥管理中心、注册系统、证书发布系统、在线证书状态查询系统。
+
+
+
+## 第10章 网络加密与密钥管理
+
+1. <span style="background-color:yellow"> 什么是链路加密？有什么优缺点？
+
+答：链路加密即对<u>网络中两个相邻节点</u>之间传输的数据进行加密保护。在受保护数据所选定的路由上，任意一对节点和相应的调制解调器之间都安装有相同的密码机，并配置相应的密钥，不同节点对之间的密码机和密钥不一定相同。
+- 优点：为网上传输的数据提供安全保证。
+- 缺点：链路两端加密设备的同步造成额外管理困难；消息在中间节点上以明文出现，维护其物理上安全代价较高。
+
+2. <span style="background-color:yellow"> 什么是节点加密？有什么优缺点？
+
+答：节点加密不允许消息在网络节点以明文形式存在，其余同链路加密。
+- 优点：消息的加、解密在安全模块中进行，这使消息内容不会被泄密。
+- 缺点：报头和路由信息以明文形式传输，难防攻击者进行通信业务分析。
+
+
+3. <span style="background-color:yellow"> 什么是端到端加密？有什么优缺点？
+
+答：端到端加密是对一对用户之间的数据连续地提供保护。它要求各对<u>用户（而不是各对节点）</u>釆用相同的密码算法和密钥。对于传送通路上的各中间节点，数据是保密的。
+- 优点：开销小、安全性高（中间节点损坏不会造成泄露）、可靠性高（每个报文独立加密而互不影响）、易于维护。
+- 缺点：路由信息等以明文形式传输，难防攻击者进行通信业务分析。
+
+
+4. <span style="background-color:yellow"> 什么是混合加密？有什么优缺点？
+
+答：混合加密即<u>链路加密</u>和<u>端到端加密</u>的混合。
+- 优点：报文被二次加密，保护了报头的敏感信息，不会被业务流分析攻击。
+- 缺点：设计较复杂，系统开销大。
+
+
+5. <span style="background-color:yellow"> 什么是密钥管理？它包括哪些方面的管理？
+
+答：密钥管理是处理密钥从产生到最终销毁的整个过程中的有关问题，包括<u>系统的初始化</u>及<u>密钥的产生、存储、备份/恢复、装入、分配、保护、更新、控制、丢失、撤销和销毁</u>等内容。
+
+
+6. <span style="background-color:yellow"> 密钥有哪些种类？它们各自有什么用途？
+
+答：
+
+- **<u>基本密钥或称初始密钥</u>**：是由用户选定或由系统分配、可在较长时间内由一对用户专用的密钥。其用途是<u>与会话密钥</u>一起去启动和控制某种算法所构造的密钥产生器，产生用于加密数据的密钥流。
+
+- **<u>主机主密钥</u>**：作用是对密钥加密密钥进行加密的密钥，存储于主机处理器中。
+
+- **<u>密钥加密密钥</u>**：用于对传送的会话或文件密钥进行加密时采用的密钥，也称为次主密钥、辅助密钥或密钥传送密钥。
+
+- **<u>会话密钥</u>**：是两个通信终端用户在一次通话或交换数据时所用的密钥。
+
+- **<u>数据加密密钥</u>**：也称工作密钥，在不增大更换密钥工作量的条件下扩大可使用的密钥量。
+
+
+7. <span style="background-color:yellow"> 有哪些密钥分配的基本方法？
+
+答：**<u>安全信道实现密钥传递、双钥体制建立安全信道、量子技术实现密钥传递</u>**。
+
+
+8. <span style="background-color:yellow"> 在用密钥枪注入密钥时，如何验证密钥注入的正确性？
+
+答：
+
+<p align="center">
+    <img width="400" src="figs/10-1.png"/><br>
+    <b>图14 验证密钥注入正确性</b>
+</p>
+
+
+9. <span style="background-color:yellow"> 密钥管理为什么要将密钥划分成不同的层次？
+
+答：保证<u>极少数密钥</u>以<u>明文</u>形式存储在<u>有严密物理保护的主机密码器件</u>中，其他密钥则以加密后的<u>密文</u>形式存于<u>密码器之外的存储器中</u>，因而大大简化了密钥管理，并增强了密钥的安全性。
+
+
+10. <span style="background-color:yellow"> 一个密钥管理系统由哪几部分构成？
+
+答：如图15所示，密钥恢复、密钥备份、公钥本、密钥档案等。
+
+<p align="center">
+    <img width="400" src="figs/10-2.png"/><br>
+    <b>图15 密码管理系统</b>
+</p>
+
+
+11. <span style="background-color:yellow"> 密钥的生存期分哪四个阶段？了解密钥管理的12个工作步骤。
+
+答：如图15所示，分为预备阶段、运行阶段、后运行阶段和报废阶段。
+
+12个工作步骤为：<u>用户注册、用户初始化、密钥生成、密钥输入、密钥注册、正常使用、密钥备份、密钥更新、密钥档案、密钥注销与销毁、密钥恢复、密钥吊销</u>。
+
+
+12. <span style="background-color:yellow"> 查找资料，了解一个好的密钥应具备哪些数学特性？
+
+答：
+
+- **随机性强**：
+    - 高熵：意味着密钥包含的信息量大，难以通过穷举或预测得到；
+    - 均匀分布：密钥中的每一位应以相同的概率为0或1。
+- **长度**：
+    - 足够的长度: 密钥长度应足够长，以抵御暴力破解攻击；
+    - 与算法匹配: 密钥长度应与所用加密算法的安全要求相匹配。
+- **唯一性**
+    - 唯一性: 每个密钥应是唯一的，避免重复使用密钥，减少碰撞攻击的风险。
+    - 密钥更新: 定期更新密钥，尤其是在发现可能的泄露或使用频繁的情况下。
+- **算法抗性**
+    - 抗分析攻击: 密钥应设计得能抵御已知的数学和统计攻击（如线性攻击、差分攻击）。
+    - 抗量子攻击: 随着量子计算的进步，考虑使用抗量子算法（如基于格的算法）和更长的密钥长度。
+
+
+## 第11章 无线网络安全
+
+1. <span style="background-color:yellow"> <span style="background-color:yellow"> 无线网络面临哪些主要安全威胁？要能识别哪些是主动攻击，哪些是被动攻击。
+
+答：
+
+- **被动攻击**：窃听，服务区标识符泄露
+
+- **主动攻击**：通信阻断，数据的注入和篡改，中间人攻击，客户端假冒，接入点伪装，匿名攻击，客户端对客户端的攻击，隐匿无线信道，重放攻击。
+
+
+2. <span style="background-color:yellow"> <span style="background-color:yellow"> GSM系统有哪些主要安全缺陷？
+
+答：
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> <u>首次开机时泄漏IMSI信息</u>，可能导致用户身份泄露。
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> 基站对用户实施<u>单向认证</u>，伪基站向用户发送欺诈信息。
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> <u>骨干网数据传输无加密</u>，中间节点可截获会话密钥。
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> <u>无数据完整性验证机制</u>，不能检测数据是否被篡改。
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> <u>主密钥$K$直接参与</u>认证与加密，存在泄露风险。
+
+- (1. <span style="background-color:yellow"> <span style="background-color:yellow"> <u>主密钥$K$存在SIM卡中</u>，有复制SIM卡的风险。
+
+
+3. <span style="background-color:yellow"> <span style="background-color:yellow"> 3G系统有哪些安全功能？有哪些主要安全缺陷？与2G相比，3G作出了哪些安全性改进？
+
+答：实现了用户网络间的<u>双向认证</u>，建立了<u>用户网络间的会话密钥</u>，保持了会话密钥的<u>新鲜性</u>，增加了<u>数据完整性</u>验证功能。
+
+安全缺陷：同2G的(1)、(3)、(5-6)，此外：
+
+- <u>CK和IK（加密密钥和完整性密钥）直接传输</u>，存在被窃听的风险；
+- <u>采用10种安全算法$f_1\sim f_{10}$</u>，算法过多存在被攻破的风险。
+
+
+4. <span style="background-color:yellow"> <span style="background-color:yellow"> 4G系统有哪些安全功能？有哪些主要安全缺陷？与3G相比，4G作出了哪些安全性改进？
+
+答：在3G的基础上，额外的安全功能有：（1）实现了<u>层次化密钥管理</u>；（2）<u>隐藏了CK和IK</u>。
+
+安全缺陷：同2G的（1）、（3）。
+
+
+5. <span style="background-color:yellow"> <span style="background-color:yellow"> 请画图分析GSM蜂窝系统保密与认证协议的工作过程，指出三元组认证向量中的每个元素所发挥的安全性作用。
+
+答：
+- $RAND$：用于用户认证和会话密钥的产生时的挑战值；
+
+- $SRES$ ：用于VLR进行用户认证时与用户传输的认证响应$SRES^{\prime}$比较；
+
+- $K_c$ ：会话密钥，用于加密会话数据。
+
+
+6. <span style="background-color:yellow"> <span style="background-color:yellow"> 请画图分析3G蜂窝系统保密与认证协议的工作过程，指出五元组认证向量中的每个元素所发挥的安全性作用。
+
+答：
+
+- $RAND$：用于用户和网络双向认证和会话密钥的产生；
+
+- $XRES$：用于网络对用户的认证；
+
+- $CK$：数据加密密钥；
+
+- $IK$：完整性验证密钥；
+
+- $AUTN$：用于用户对网络的认证。
+
+
+7. <span style="background-color:yellow"> <span style="background-color:yellow"> 为何2G/3G/4G系统的挑战值RAND是一个随机数而不能是常数？如果挑战值RAND为常数，会产生何种安全问题？请加以分析。
+
+答：为了避免重放攻击和伪装攻击，确保密钥和认证响应的新鲜性。如果挑战值$RAND$为常数，则攻击者可利用已截获的认证响应进行伪装，或利用已截获的数据包进行重放攻击。此外，若$RAND$为常数，攻击者也可以通过已知密文攻击，分析得到主密钥等的相关信息。
+
+
+8. <span style="background-color:yellow"> <span style="background-color:yellow"> 与2G/3G/4G相比，5G在哪些方面提升了安全性？
+
+答：增加了用户身份标识保护，实现了用户网络间的双向认证，建立了用户网络间的会话密钥和数据完整性验证密钥，实现了层次化密钥管理，隐藏了加密密钥CK和完整性验证密钥IK。
+
+
+## 第12章 防火墙原理与设计
+
+1. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是防火墙？防护墙的主要功能是什么？防护墙的默认规则是什么？
+
+2. <span style="background-color:yellow"> <span style="background-color:yellow"> 按防护墙的技术分类，可分为哪几类？若按防护墙的结构分类，又可以分为哪几类？
+
+3. <span style="background-color:yellow"> <span style="background-color:yellow"> 防火墙工作于OSI七层模型的层次越高，其安全性是不是越高？
+
+4. <span style="background-color:yellow"> <span style="background-color:yellow"> 什么是网络地址转换NAT？防护墙为什么要做NAT转换？NAT的类型有哪些？
+
+5. <span style="background-color:yellow"> <span style="background-color:yellow"> 掌握NAT路由器的工作原理，要知道外出的数据包和进入的数据包地址是如何替换的？
+
+6. <span style="background-color:yellow"> <span style="background-color:yellow"> 静态包过滤防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+7. <span style="background-color:yellow"> <span style="background-color:yellow"> 动态包过滤防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+8. <span style="background-color:yellow"> <span style="background-color:yellow"> 电路级网关防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+9. <span style="background-color:yellow"> <span style="background-color:yellow"> 应用级网关防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+10. <span style="background-color:yellow"> <span style="background-color:yellow"> 状态检测防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+11. <span style="background-color:yellow"> <span style="background-color:yellow"> 切换代理防护墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+12. <span style="background-color:yellow"> <span style="background-color:yellow"> 空气隙防火墙工作于OSI的哪一层？它对数据包的哪些参数进行过滤？有何优缺点？
+
+
+##  第13章 入侵检测技术
+
+1. <span style="background-color:yellow"> 什么是入侵检测系统IDS？IDS的主要功能是什么？评价IDS好坏的标准是什么？
+
+2. <span style="background-color:yellow"> 异常检测的方法有哪些？误用检测的方法有哪些？入侵检测技术有哪些？
+
+3. <span style="background-color:yellow"> IDS的结构由哪几部分组成？各自有何功能？
+
+4. <span style="background-color:yellow"> 按照数据来源分类，IDS分哪几类？按照检测技术分类，IDS分哪几类？
+
+5. <span style="background-color:yellow"> 什么是NIDS？NIDS在网络中是如何部署的？NIDS有何优缺点？
+
+6. <span style="background-color:yellow"> 什么是HIDS？HIDS在网络中是如何部署的？HIDS有何优缺点？
+
+7. <span style="background-color:yellow"> 什么是DIDS？DIDS在网络中是如何部署的？DIDS有何优缺点？
+
+8. <span style="background-color:yellow"> 评价一个IDS优劣的关键性能、功能指标有哪些？
+
+9. <span style="background-color:yellow"> IDS的异常检测规则是否越多越好？
+
+10. <span style="background-color:yellow"> IDS是否能够主动发现并阻断入侵？若要阻断入侵，应该如何去做才能阻断攻击？
+
+11. <span style="background-color:yellow"> 在一个实际网络中，IDS的探测器接口一般用网线接在哪个网络设备的哪个位置？给你1台防火墙、1台IDS、1台交换机、1台路由器，请画出它们的连接图。
+
+
+##  第14章 VPN技术
+
+1. <span style="background-color:yellow"> 什么是虚拟专网VPN？VPN的主要功能是什么？
+
+2. <span style="background-color:yellow"> 按照应用场景分类，VPN可分为哪几类？按隧道协议分类，VPN可分为哪几类？
+
+3. <span style="background-color:yellow"> VPN 所采用的关键技术有哪些？OSI模型第3层的隧道协议有哪些？
+
+4. <span style="background-color:yellow"> IPSec 协议主要由哪两种协议构成？每种协议又有哪两种工作模式？
+
+5. <span style="background-color:yellow"> IPSecVPN在采用传输模式、隧道模式时，它们对IP数据包的封装模式有何差异？
+
+6. <span style="background-color:yellow"> IPSecVPN在功能实现上，由哪几个系统模块组成？
+
+7. <span style="background-color:yellow"> IPSec VPN有何优缺点？它适用于何种应用场景？
+
+8. <span style="background-color:yellow"> 什么是TLS VPN？TLS VPN有何优缺点？它适用于何种应用场景？
+
+9. <span style="background-color:yellow"> IPSecVPN和TLS VPN是否可以相互替代？试比较IPSecVPN和TLS VPN的异同点 。
+
+10. <span style="background-color:yellow"> 什么是MPL VPN？MPLS VPN基于何种IP路由选择技术？
+
+11. <span style="background-color:yellow"> 京东商城用何种VPN？网银用何种种VPN？北航老校区和新校区用何种VPN相连？
+
+12. <span style="background-color:yellow"> 在一个实际网络中，VPN部署在网络中的哪个位置？给你1台VPN、1台防火墙、1台IDS、1台交换机、1台路由器，请画出它们的连接图。
+
 
 
