@@ -1339,9 +1339,9 @@ OSI第2、3层的隧道协议如图所示：
        |
     [Router]
        |
-    [Firewall]
-       |
     [VPN]
+       |
+    [Firewall]
        |
     [Switch] --- [IDS]
        |
